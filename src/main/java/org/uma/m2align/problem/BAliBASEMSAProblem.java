@@ -36,12 +36,13 @@ public class BAliBASEMSAProblem extends MSAProblem {
     listOfSequenceNames = new ArrayList<>();
     listOfSequenceNames = readSeqNameFromAlignment(BalibasePath + InstanceBalibase + ".tfa");
 
-    listOfPrecomputedStringAlignments = readPreComputedAlignments(dataFiles);
-
     originalSequences = readDataFromFastaFile(BalibasePath + InstanceBalibase + ".tfa");
 
-    setNumberOfVariables(listOfPrecomputedStringAlignments.get(0).size());
+    setNumberOfVariables(originalSequences.size());
     setNumberOfConstraints(0);
+
+    listOfPrecomputedStringAlignments = readPreComputedAlignments(dataFiles);
+
   }
 
 

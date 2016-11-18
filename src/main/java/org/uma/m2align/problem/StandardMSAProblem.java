@@ -33,12 +33,14 @@ public class StandardMSAProblem extends MSAProblem {
 
     listOfSequenceNames = readSeqNameFromAlignment(msaProblemFileName);
 
-    listOfPrecomputedStringAlignments = readPreComputedAlignments(dataFiles);
-
     originalSequences = readDataFromFastaFile(msaProblemFileName);
-
-    setNumberOfVariables(listOfPrecomputedStringAlignments.get(0).size());
+    
+    setNumberOfVariables(originalSequences.size());
     setNumberOfConstraints(0);
+    
+    listOfPrecomputedStringAlignments = readPreComputedAlignments(dataFiles);
+    
+    
   }
 
 

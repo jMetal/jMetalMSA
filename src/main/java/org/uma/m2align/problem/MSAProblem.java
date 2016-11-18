@@ -41,7 +41,6 @@ public class MSAProblem extends DynamicallyComposedProblem<MSASolution> {
     JMetalRandom randomGenerator = JMetalRandom.getInstance();
 
     for (List<ArrayChar> sequenceList : listOfPrecomputedStringAlignments) {
-
       MSASolution newIndividual = new MSASolution(sequenceList, this);
       population.add(newIndividual);
     }
@@ -64,8 +63,9 @@ public class MSAProblem extends DynamicallyComposedProblem<MSASolution> {
 
       population.add(children.get(0));
       population.add(children.get(1));
-
+      
     }
+    
     return population;
   }
 
@@ -74,11 +74,27 @@ public class MSAProblem extends DynamicallyComposedProblem<MSASolution> {
     List<List<ArrayChar>> listPreAlignments = new ArrayList<>();
     for (String dataFile : dataFiles) {
       try {
-        listPreAlignments.add(readDataFromFastaFile(dataFile));
+          
+        List<ArrayChar> seqAligned =readDataFromFastaFile(dataFile);
+        MSASolution sol = new MSASolution(seqAligned, this);
+        if(!sol.isValid()){
+          System.out.println("MSA in file " + dataFile + " is not Valid");
+        }else{
+            listPreAlignments.add(seqAligned);
+        }
+        
+        
       } catch (Exception e) {
-        throw new JMetalException("Error reading data from fasta files " + dataFile);
+        throw new JMetalException("Error reading data from fasta files " + dataFile + ". Message: " + e.toString());
       }
     }
+    
+    if(listPreAlignments.size()<2){
+        throw new JMetalException("More than one PreComputedAlignment is needed");
+    }else{
+       System.out.println(listPreAlignments.size() + " PreComputedAlignments added");
+    }
+            
     return listPreAlignments;
   }
 
@@ -103,7 +119,7 @@ public class MSAProblem extends DynamicallyComposedProblem<MSASolution> {
             sequences = FastaReaderHelper.readFastaProteinSequence(new File(dataFile));
 
     for (Map.Entry<String, ProteinSequence> entry : sequences.entrySet()) {
-      sequenceList.add(new ArrayChar(entry.getValue().getSequenceAsString()));
+       sequenceList.add(new ArrayChar(entry.getValue().getSequenceAsString()));
     }
 
     return sequenceList;

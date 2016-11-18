@@ -169,7 +169,7 @@ public class MSASolution extends AbstractGenericSolution<List<Integer>, MSAProbl
   }
 
   public char[][] decodeToMatrix(List<ArrayChar> originalSeqs) {
-
+       
     char[][] alignedSequences = new char[getNumberOfVariables()][];
 
     for (int i = 0; i < getNumberOfVariables(); i++) {
@@ -351,8 +351,12 @@ public class MSASolution extends AbstractGenericSolution<List<Integer>, MSAProbl
     for (int k = 1; k < getNumberOfVariables(); k++) {
       if (sizeAlignment != getOriginalSequences().get(k).getSize() + getNumberOfGaps(k)) {
 
-        System.out.println("Error Solution, " + k + " sequence has a wrong Length (OSeqLenghth: " + getOriginalSequences().get(k).getSize() +
-                ") + NumOfGaps: " + getNumberOfGaps(k) + " is not equal to Size: " + sizeAlignment);
+        System.out.println("Error Solution, " + k + " sequence has a wrong Length OriginalSeqLenghth " + getOriginalSequences().get(k).getSize() +
+                ")+ NumOfGaps " + getNumberOfGaps(k) + " is not equal to the Size " + sizeAlignment);
+        
+        System.out.println("Original Sequence: " + getOriginalSequences().get(k));
+        System.out.println("Enconced Sequence: " + getVariableValue(k).toString());
+                
         return false;
       }
 
