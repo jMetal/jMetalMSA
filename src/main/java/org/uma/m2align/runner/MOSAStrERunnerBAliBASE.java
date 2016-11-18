@@ -37,6 +37,7 @@ import org.uma.m2align.solution.MSASolution;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.uma.m2align.objective.impl.PercentageOfNonGapsObjective;
 import org.uma.m2align.problem.BAliBASEMSAProblem;
 
 
@@ -76,7 +77,7 @@ public class MOSAStrERunnerBAliBASE {
     StrikeObjective objStrike = new StrikeObjective();
     objectiveList.add(objStrike);
     objectiveList.add(new PercentageOfAlignedColumnsObjective());
-    objectiveList.add(new PercentageOfAlignedColumnsObjective());
+    objectiveList.add(new PercentageOfNonGapsObjective());
 
     problem = new BAliBASEMSAProblem(instance, dataDirectory, objectiveList);
 
