@@ -4,15 +4,12 @@ jMetalMSA is an Open source software tool aimed at solving multiple sequence ali
 
 ##Architecture of jMetalMSA
 
-The object-oriented architecture of jMetalMSA is shown in Fig. 1, where we can observe that it is composed of four
-core classes (Java interfaces). Three of them (MSAProblem, MSAAlgorithm, and
-MSASolution) inherits from their counterparts in jMetal (the inheritance rela-
-3 jMetalMSA project in GitHub: http://github.com/jmetal/jmetalmsa
-tionships are omitted in the diagram), and there is a class Score to represent a
-given MSA scoring function.
+![alt tag](https://github.com/jMetal/jMetalMSA/blob/master/architecture/jmetalmsaarchitecture.png)
 
-Architecture of jMetalMSA (some inheritance associations have been not included
-to simplify the diagram).
+The object-oriented architecture of jMetalMSA is shown in Figure above, is composed of four core classes 
+(Java interfaces). Three of them (MSAProblem, MSAAlgorithm, and MSASolution) inherits from their
+counterparts in [jMetal](https://github.com/jMetal/jMetalMSA) (the inheritance relationships are omitted in the diagram), and there is a class Score to represent a
+given MSA scoring function.
 
 ##List of Algorithms
 
