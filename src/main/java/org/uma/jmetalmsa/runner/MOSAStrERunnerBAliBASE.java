@@ -22,7 +22,6 @@ import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.util.AlgorithmRunner;
 import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
-import org.uma.jmetal.util.evaluator.impl.MultithreadedSolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetal.util.fileoutput.SolutionListOutput;
 import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
@@ -30,6 +29,7 @@ import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
 import java.util.ArrayList;
 import java.util.List;
 import org.uma.jmetal.util.JMetalException;
+import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetalmsa.algorithm.nsgaii.NSGAIIMSABuilder;
 import org.uma.jmetalmsa.crossover.SPXMSACrossover;
 import org.uma.jmetalmsa.mutation.ShiftClosedGapsMSAMutation;
@@ -58,34 +58,22 @@ public class MOSAStrERunnerBAliBASE {
     MutationOperator<MSASolution> mutation;
     SelectionOperator selection;
 
-    if (args.length != 5) {
+    if (args.length != 4) {
       throw new JMetalException("Wrong number of arguments") ;
     }
     String instance = args[0];
     String dataDirectory = args[1];
     Integer maxEvaluations = Integer.parseInt(args[2]);
     Integer populationSize = Integer.parseInt(args[3]);
-    Integer numberOfCores = Integer.parseInt(args[4]);
     
-//    String instance = "BB11001";
-//    String dataDirectory = "C:/msa";
-//    Integer maxEvaluations = 100000;
-//    Integer populationSize = 100;
-//    Integer numberOfCores = 4;
-
     crossover = new SPXMSACrossover(0.8);
     mutation = new ShiftClosedGapsMSAMutation(0.2);
     selection = new BinaryTournamentSelection(new RankingAndCrowdingDistanceComparator());
 
     List<Score> scoreList = new ArrayList<>();
 
-    //WeightedSumOfPairsObjective wSOPObjective = new WeightedSumOfPairsObjective(new PAM250(),6,0.85);
-    //scoreList.add(wSOPObjective);
-    
     StrikeScore objStrike = new StrikeScore();
     scoreList.add(objStrike);
-    //scoreList.add(new SumOfPairsObjective(new PAM250()));
-    //scoreList.add(wSOPObjective);
     scoreList.add(new PercentageOfAlignedColumnsScore());
     scoreList.add(new PercentageOfNonGapsScore());
 
@@ -93,16 +81,9 @@ public class MOSAStrERunnerBAliBASE {
 
     objStrike.initializeParameters(problem.PDBPath, problem.getListOfSequenceNames());
     
-    //wSOPObjective.initializeWeightMatrix(problem.originalSequences);
-
     SolutionListEvaluator<MSASolution> evaluator;
 
-    if (numberOfCores == 1) {
-      evaluator = new SequentialSolutionListEvaluator<>();
-
-    } else {
-      evaluator = new MultithreadedSolutionListEvaluator<MSASolution>(numberOfCores, problem);
-    }
+    evaluator = new SequentialSolutionListEvaluator<>();
 
     algorithm = new NSGAIIMSABuilder(problem, crossover, mutation, NSGAIIVariant.NSGAII)
             .setSelectionOperator(selection)
@@ -118,10 +99,7 @@ public class MOSAStrERunnerBAliBASE {
     List<MSASolution> population = algorithm.getResult();
     long computingTime = algorithmRunner.getComputingTime();
 
-    //JMetalLogger.logger.info("Total execution time: " + computingTime + "ms");
-
-    System.out.println(instance + "\t" + numberOfCores + "\t"  + computingTime);
-    
+    JMetalLogger.logger.info("Total execution time: " + computingTime + "ms");
     
     for (MSASolution solution : population) {
       for (int i = 0; i < problem.getNumberOfObjectives(); i++) {

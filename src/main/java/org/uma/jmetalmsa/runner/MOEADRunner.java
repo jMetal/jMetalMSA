@@ -78,14 +78,10 @@ public class MOEADRunner {
 
     List<Score> scoreList = new ArrayList<>();
 
-    //StrikeObjective objStrike = new StrikeScore();
-    //scoreList.add(objStrike);
     scoreList.add(new PercentageOfAlignedColumnsScore());
     scoreList.add(new PercentageOfNonGapsScore());
 
     problem = new BAliBASE_MSAProblem(problemName, dataDirectory, scoreList);
-
-    //objStrike.initializeParameters(problem.PDBPath, problem.getListOfSequenceNames());
 
     SolutionListEvaluator<MSASolution> evaluator;
 

@@ -21,7 +21,6 @@ import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.util.AlgorithmRunner;
 import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
-import org.uma.jmetal.util.evaluator.impl.MultithreadedSolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetal.util.fileoutput.SolutionListOutput;
 import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
@@ -33,6 +32,7 @@ import org.uma.jmetalmsa.solution.MSASolution;
 import java.util.ArrayList;
 import java.util.List;
 import org.uma.jmetal.util.JMetalException;
+import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetalmsa.score.impl.PercentageOfAlignedColumnsScore;
 import org.uma.jmetalmsa.score.impl.PercentageOfNonGapsScore;
 import org.uma.jmetalmsa.score.impl.StrikeScore;
@@ -57,7 +57,7 @@ public class GWASFGAMSARunner {
     MutationOperator<MSASolution> mutation;
     SelectionOperator selection;
 
-    if (args.length != 5) {
+    if (args.length != 4) {
       throw new JMetalException("Wrong number of arguments") ;
     }
 
@@ -65,14 +65,7 @@ public class GWASFGAMSARunner {
     String dataDirectory = args[1];
     Integer maxEvaluations = Integer.parseInt(args[2]);
     Integer populationSize = Integer.parseInt(args[3]);
-    Integer numberOfCores = Integer.parseInt(args[4]);
 
-//    String instance = "BB11001";
-//    String dataDirectory = "C:/msa";
-//    Integer maxEvaluations = 100000;
-//    Integer populationSize = 100;
-//    Integer numberOfCores = 4;
-//    
     crossover = new SPXMSACrossover(0.8);
     mutation = new ShiftClosedGapsMSAMutation(0.2);
     selection = new BinaryTournamentSelection(new RankingAndCrowdingDistanceComparator());
@@ -90,12 +83,7 @@ public class GWASFGAMSARunner {
 
     SolutionListEvaluator<MSASolution> evaluator;
 
-    if (numberOfCores == 1) {
-      evaluator = new SequentialSolutionListEvaluator<>();
-
-    } else {
-      evaluator = new MultithreadedSolutionListEvaluator<MSASolution>(numberOfCores, problem);
-    }
+    evaluator = new SequentialSolutionListEvaluator<>();
 
     algorithm = new GWASFGAMSA(problem, populationSize, maxEvaluations, crossover, mutation, selection, evaluator) ;
 
@@ -105,12 +93,9 @@ public class GWASFGAMSARunner {
     List<MSASolution> population = algorithm.getResult();
     long computingTime = algorithmRunner.getComputingTime();
 
-    //JMetalLogger.logger.info("Total execution time: " + computingTime + "ms");
+    JMetalLogger.logger.info("Total execution time: " + computingTime + "ms");
 
-     System.out.println(instance + "\t" + numberOfCores + "\t"  + computingTime);
-     
-     
-     for (MSASolution solution : population) {
+    for (MSASolution solution : population) {
       for (int i = 0; i < problem.getNumberOfObjectives(); i++) {
         if (!scoreList.get(i).isAMinimizationScore()) {
           solution.setObjective(i, -1.0 * solution.getObjective(i));
@@ -118,9 +103,9 @@ public class GWASFGAMSARunner {
       }
     }
        
-    DefaultFileOutputContext varFile = new  DefaultFileOutputContext("VAR." + instance +"." + algorithm.getName()+ ".tsv");
+    DefaultFileOutputContext varFile = new  DefaultFileOutputContext("VAR.tsv");
     varFile.setSeparator("\n");
-    DefaultFileOutputContext funFile = new  DefaultFileOutputContext("FUN." + instance +"." + algorithm.getName()+ ".tsv");
+    DefaultFileOutputContext funFile = new  DefaultFileOutputContext("FUN.tsv");
     funFile.setSeparator("\t");
      
     new SolutionListOutput(population)

@@ -51,7 +51,7 @@ import org.uma.jmetalmsa.score.Score;
  */
 public class NSGAIIIRunner {
   /**
-   * Arguments: problemName dataDirectory maxEvaluations numberOfCores
+   * Arguments: problemName dataDirectory maxEvaluations
    * @param args Command line arguments.
    */
   public static void main(String[] args) throws Exception {
@@ -61,14 +61,13 @@ public class NSGAIIIRunner {
     MutationOperator<MSASolution> mutation;
     SelectionOperator selection;
 
-    if (args.length != 4) {
+    if (args.length != 3) {
       throw new JMetalException("Wrong number of arguments") ;
     }
 
     String problemName = args[0];
     String dataDirectory = args[1];
     Integer maxIterations = Integer.parseInt(args[2]);
-    Integer numberOfCores = Integer.parseInt(args[3]);
 
     crossover = new SPXMSACrossover(0.8);
     mutation = new ShiftClosedGapsMSAMutation(0.2);
@@ -87,12 +86,7 @@ public class NSGAIIIRunner {
 
     SolutionListEvaluator<MSASolution> evaluator;
 
-    if (numberOfCores == 1) {
-      evaluator = new SequentialSolutionListEvaluator<>();
-
-    } else {
-      evaluator = new MultithreadedSolutionListEvaluator<MSASolution>(numberOfCores, problem);
-    }
+    evaluator = new SequentialSolutionListEvaluator<>();
 
     algorithm = new NSGAIIIMSABuilder(problem)
             .setCrossoverOperator(crossover)
@@ -111,18 +105,7 @@ public class NSGAIIIRunner {
 
     JMetalLogger.logger.info("Total execution time: " + computingTime + "ms");
 
-    new SolutionListOutput(population)
-            .setSeparator("\t")
-            //.setVarFileOutputContext(new DefaultFileOutputContext("VAR." + problemName +"." + algorithm.getName()+ ".tsv"))
-            .setVarFileOutputContext(new DefaultFileOutputContext("VAR.tsv"))
-            .print();
-
-    new SolutionListOutput(population)
-            .setSeparator("\n")
-            //.setFunFileOutputContext(new DefaultFileOutputContext("FUN." + problemName +"." + algorithm.getName()+ ".tsv"))
-            .setFunFileOutputContext(new DefaultFileOutputContext("FUN.tsv"))
-            .print();
-/*
+    
     for (MSASolution solution : population) {
       for (int i = 0; i < problem.getNumberOfObjectives(); i++) {
         if (!scoreList.get(i).isAMinimizationScore()) {
@@ -130,12 +113,18 @@ public class NSGAIIIRunner {
         }
       }
     }
+       
+    DefaultFileOutputContext varFile = new  DefaultFileOutputContext("VAR." + problemName +"." + algorithm.getName()+ ".tsv");
+    varFile.setSeparator("\n");
+    DefaultFileOutputContext funFile = new  DefaultFileOutputContext("FUN." + problemName +"." + algorithm.getName()+ ".tsv");
+    funFile.setSeparator("\t");
 
+   
     new SolutionListOutput(population)
-            .setSeparator("\n")
-            .setFunFileOutputContext(new DefaultFileOutputContext("FUN2." + problemName + ".tsv"))
+            .setVarFileOutputContext(varFile)
+            .setFunFileOutputContext(funFile)
             .print();
-*/
+    
     evaluator.shutdown();
   }
 }

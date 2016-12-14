@@ -60,7 +60,7 @@ public class MOSAStrERunner {
     MutationOperator<MSASolution> mutation;
     SelectionOperator selection;
 
-    if (args.length != 6) {
+    if (args.length != 5) {
       throw new JMetalException("Wrong number of arguments") ;
     }
 
@@ -69,7 +69,6 @@ public class MOSAStrERunner {
     String preComputedAlignments = args[2];
     Integer maxEvaluations = Integer.parseInt(args[3]);
     Integer populationSize = Integer.parseInt(args[4]);
-    Integer numberOfCores = Integer.parseInt(args[5]);
 
     crossover = new SPXMSACrossover(0.8);
     mutation = new ShiftClosedGapsMSAMutation(0.2);
@@ -88,12 +87,7 @@ public class MOSAStrERunner {
 
     SolutionListEvaluator<MSASolution> evaluator;
 
-    if (numberOfCores == 1) {
-      evaluator = new SequentialSolutionListEvaluator<>();
-
-    } else {
-      evaluator = new MultithreadedSolutionListEvaluator<MSASolution>(numberOfCores, problem);
-    }
+    evaluator = new SequentialSolutionListEvaluator<>();
 
     algorithm = new NSGAIIMSABuilder(problem, crossover, mutation, NSGAIIVariant.NSGAII)
             .setSelectionOperator(selection)

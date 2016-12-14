@@ -24,7 +24,6 @@ import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetal.util.archive.impl.HypervolumeArchive;
 import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
-import org.uma.jmetal.util.evaluator.impl.MultithreadedSolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetal.util.fileoutput.SolutionListOutput;
 import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
@@ -41,6 +40,7 @@ import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetalmsa.score.impl.PercentageOfNonGapsScore;
 import org.uma.jmetalmsa.score.impl.SumOfPairsScore;
 import org.uma.jmetalmsa.problem.BAliBASE_MSAProblem;
+import org.uma.jmetalmsa.problem.Standard_MSAProblem;
 import org.uma.jmetalmsa.util.distancematrix.impl.PAM250;
 import org.uma.jmetalmsa.score.Score;
 
@@ -56,26 +56,21 @@ public class MOCellRunner {
    * @param args Command line arguments.
    */
   public static void main(String[] args) throws Exception {
-    BAliBASE_MSAProblem problem;
+    Standard_MSAProblem problem;
     Algorithm<List<MSASolution>> algorithm;
     CrossoverOperator<MSASolution> crossover;
     MutationOperator<MSASolution> mutation;
     SelectionOperator selection;
 
     if (args.length != 5) {
-      throw new JMetalException("Wrong number of arguments.") ;
+      throw new JMetalException("Wrong number of arguments") ;
     }
-    String instance = args[0];
-    String dataDirectory = args[1];
-    Integer maxEvaluations = Integer.parseInt(args[2]);
-    Integer populationSize = Integer.parseInt(args[3]);
-    Integer numberOfCores = Integer.parseInt(args[4]);
 
-//    String instance = "BB11001";
-//    String dataDirectory = "C:/msa";
-//    Integer maxEvaluations = 100000;
-//    Integer populationSize = 100;
-//    Integer numberOfCores = 4;
+    String msaFile = args[0];
+    String dataDirectory = args[1];
+    String preComputedAlignments = args[2];
+    Integer maxEvaluations = Integer.parseInt(args[3]);
+    Integer populationSize = Integer.parseInt(args[4]);
     
     crossover = new SPXMSACrossover(0.8);
     mutation = new ShiftClosedGapsMSAMutation(0.2);
@@ -83,29 +78,15 @@ public class MOCellRunner {
 
     List<Score> scoreList = new ArrayList<>();
 
-    //WeightedSumOfPairsObjective wSOPObjective = new WeightedSumOfPairsObjective(new Blosum62(),6,0.85);
-    //scoreList.add(wSOPObjective);
-    
-    //StrikeObjective objStrike = new StrikeObjective();
-    //scoreList.add(objStrike);
-    
     scoreList.add(new SumOfPairsScore(new PAM250()));
     scoreList.add(new PercentageOfAlignedColumnsScore());
     scoreList.add(new PercentageOfNonGapsScore());
 
-    problem = new BAliBASE_MSAProblem(instance, dataDirectory, scoreList);
-
-    //wSOPObjective.initializeWeightMatrix(problem.originalSequences);
-    //objStrike.initializeParameters(problem.PDBPath, problem.getListOfSequenceNames());
+    problem = new Standard_MSAProblem(msaFile, dataDirectory, preComputedAlignments, scoreList);
 
     SolutionListEvaluator<MSASolution> evaluator;
 
-    if (numberOfCores == 1) {
-      evaluator = new SequentialSolutionListEvaluator<>();
-
-    } else {
-      evaluator = new MultithreadedSolutionListEvaluator<MSASolution>(numberOfCores, problem);
-    }
+    evaluator = new SequentialSolutionListEvaluator<>();
 
     algorithm = new MOCellMSABuilder(problem, crossover, mutation)
             .setArchive(new HypervolumeArchive<>(populationSize, new WFGHypervolume<MSASolution>()))
@@ -134,9 +115,9 @@ public class MOCellRunner {
       }
     }
        
-    DefaultFileOutputContext varFile = new  DefaultFileOutputContext("VAR." + instance +"." + algorithm.getName()+ ".tsv");
+    DefaultFileOutputContext varFile = new  DefaultFileOutputContext("VAR.tsv");
     varFile.setSeparator("\n");
-    DefaultFileOutputContext funFile = new  DefaultFileOutputContext("FUN." + instance +"." + algorithm.getName()+ ".tsv");
+    DefaultFileOutputContext funFile = new  DefaultFileOutputContext("FUN.tsv");
     funFile.setSeparator("\t");
 
    
