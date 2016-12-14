@@ -8,20 +8,43 @@ jMetalMSA is an Open source software tool aimed at solving multiple sequence ali
 
 The object-oriented architecture of jMetalMSA is shown in Figure above, is composed of four core classes 
 (Java interfaces). Three of them (MSAProblem, MSAAlgorithm, and MSASolution) inherits from their
-counterparts in [jMetal](https://github.com/jMetal/jMetalMSA) (the inheritance relationships are omitted in the diagram), and there is a class Score to represent a
+counterparts in [jMetal](https://github.com/jMetal/jMetal) (the inheritance relationships are omitted in the diagram), and there is a class Score to represent a
 given MSA scoring function.
 
-##List of Algorithms
-
-Contains an implementation of the NSGA-II algorithm configured with a single-point crossover and shift closed gaps mutation operators, and three objectives to optimize: STRIKE, percentage of alignment columns and percentage of non gaps. These settings corresponds to the [MOSAStrE algorithm](http://bioinformatics.oxfordjournals.org/content/early/2013/06/21/bioinformatics.btt360.abstract). 
-
 ## Summary of features
-jMetalMSA contains the following features:
-* Implementation of the MO-SAStrE algorithm
-* List of algoritms of the state-of-the-art
-* The algorithm can run in parallel in multi-core systems
-* The included dataset is BAliBASE v3.0
 
+##List of Algorithms
+The list of metaheuristics currently available in jMetalMSA include the evolutionary algorithms 
+* NSGA-II [1] 
+* NSGA-III [2] 
+* SMS-EMOA [3]
+* SPEA2 [4]
+* PAES [5]
+* MOEA/D [6]
+* MOCell [7]
+* GWASF-GA [8].
+
+##Crossover Operator
+The crossover operator is the Single-Point Crossover adapted to alignments, randomly selects a position from the parent A
+by splitting it into two blocks and the parent B is tailored so that the right piece can be joined to the left piece of 
+the first parent (PA1) and vice versa. Selected blocks are crossed between these two parents
+
+##Mutation Operators
+The list of mutation operators included in jMetalMSA are:
+* Shift-closed gaps: Closed gaps are randomly chosen and shifted to another position.
+* Non-gap group splitting: a non-gap group is selected randomly, and it is split into two groups.
+* One gap insertion: Inserts a gap in a random position for each sequence.
+* Two adjacent gap groups merging: Selects a random group of gaps and merge with its nearest group of gaps.
+* Multiple mutation 
+
+##Scores
+The scores that are currently available in jMetalMSA are:
+* Sum of Pairs
+* Weighted Sum of Pairs with Affine Gaps
+* Single sTRucture Induced Evaluation (STRIKE).
+* Percentage of Totally Conserved Columns.
+* Percentage of Non-Gaps
+ 
 ## Requirements
 To use jMetalMSA the following software packages are required:
 * [Java SE Development Kit 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html?ssSourceSiteId=otnes)
@@ -58,10 +81,10 @@ The Contacts files for each sequence of the dataset will be created into the out
 
 ## Runing jMetalMSA
 
-To execute the MO-SAStrE algorithn to align a particular dataset of sequences, just run this command:
+To execute the MOCell algorithn to align a particular dataset of sequences, just run this command:
 
 ````
-java -cp target/jmetalmsa-1.0-SNAPSHOT-jar-with-dependencies.jar org.uma.jmetalmsa.runner.MOSAStrERunner sequencesFileName PDB_ContactsDataDirectory listOfPreComputedAlignments NumberOfEvaluations PopulationSize NumberOfCores
+java -cp target/jmetalmsa-1.0-SNAPSHOT-jar-with-dependencies.jar org.uma.jmetalmsa.runner.MOCellRunner sequencesFileName PDB_ContactsDataDirectory listOfPreComputedAlignments NumberOfEvaluations PopulationSize NumberOfCores
 ```
 * sequencesFileName: the filename of the sequences dataset (in FASTA Format).
 * dataDirectory: The Path that contains the Structural Information files (PDB's (*.pdb) and Strike Contact Matrix (*.contacts)) of the sequences to align and the Pre-Computed alignments to use to generate the Initial population of the algorithm.  
@@ -70,10 +93,10 @@ java -cp target/jmetalmsa-1.0-SNAPSHOT-jar-with-dependencies.jar org.uma.jmetalm
 * PopulationSize: Size of the population of the algorithm
 * NumberOfCores: Number of cores to use for the execution of the Algorithm, greater than 1 enable the Parallel features.
 
-To execute the algorithm to solve a problem in Balibase, just run this command:
+To execute the NSGA-II to solve a problem in BAliBASE, just run this command:
 
 ````
-java -cp target/jMetalMSA-1.0-SNAPSHOT-jar-with-dependencies.jar org.uma.jMetalMSA.runner.MOSAStrERunnerBAliBASE balibaseProblemName dataDirectory NumberOfEvaluations PopulationSize NumberOfCores
+java -cp target/jMetalMSA-1.0-SNAPSHOT-jar-with-dependencies.jar org.uma.jmetalmsa.runner.MOSAStrERunnerBAliBASE balibaseProblemName dataDirectory NumberOfEvaluations PopulationSize NumberOfCores
 ```
 * balibaseProblemName: the BAliBASE instance name, for instance `BB12001`. 
 * dataDirectory: The Path that contains the Structural Information files (PDB's (*.pdb) and Strike Contact Matrix (*.contacts)) of the sequences to align and the Pre-Computed alignments to use to generate the Initial population of the algorithm.  
