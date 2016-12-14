@@ -61,7 +61,7 @@ Once cloned, you can compile the software and generate a jar file with the follo
 ```
 mvn package
 ```
-This sentence will generate a directory called `target` which will contain a file called `jMetalMSA-1.0-SNAPSHOT-jar-with-dependencies.jar`
+This sentence will generate a directory called `target` which will contain a file called `jmetalmsa-1.0-SNAPSHOT-jar-with-dependencies.jar`
 
 ## Download PDB files and Generation of the Strike Contact Matrix files
 
@@ -81,28 +81,26 @@ The Contacts files for each sequence of the dataset will be created into the out
 
 ## Runing jMetalMSA
 
-To execute the MOCell algorithn to align a particular dataset of sequences, just run this command:
+To execute the MOCell algorithm to align a particular dataset of sequences with three objectives: SOP, TC and Non-Gaps, just run this command:
 
 ````
-java -cp target/jmetalmsa-1.0-SNAPSHOT-jar-with-dependencies.jar org.uma.jmetalmsa.runner.MOCellRunner sequencesFileName PDB_ContactsDataDirectory listOfPreComputedAlignments NumberOfEvaluations PopulationSize NumberOfCores
+java -cp target/jmetalmsa-1.0-SNAPSHOT-jar-with-dependencies.jar org.uma.jmetalmsa.runner.MOCellRunner sequencesFileName PDB_ContactsDataDirectory listOfPreComputedAlignments NumberOfEvaluations PopulationSize
 ```
 * sequencesFileName: the filename of the sequences dataset (in FASTA Format).
 * dataDirectory: The Path that contains the Structural Information files (PDB's (*.pdb) and Strike Contact Matrix (*.contacts)) of the sequences to align and the Pre-Computed alignments to use to generate the Initial population of the algorithm.  
 * listOfPreComputedAlignments: A list of filenames of the pre-alignments separated by `-`, only the file names must be defined, because jMetalMSA will be search these files into the `dataDirectory`.
 * NumberOfEvaluations: Number of the Maximun Evaluations of the algorithm.
 * PopulationSize: Size of the population of the algorithm
-* NumberOfCores: Number of cores to use for the execution of the Algorithm, greater than 1 enable the Parallel features.
 
-To execute the NSGA-II to solve a problem in BAliBASE, just run this command:
+To execute the NSGA-II with  three objectives STRIKE, TC and %Non-Gaps (MOSAStrE) to solve a problem in BAliBASE, just run this command:
 
 ````
-java -cp target/jMetalMSA-1.0-SNAPSHOT-jar-with-dependencies.jar org.uma.jmetalmsa.runner.MOSAStrERunnerBAliBASE balibaseProblemName dataDirectory NumberOfEvaluations PopulationSize NumberOfCores
+java -cp target/jMetalMSA-1.0-SNAPSHOT-jar-with-dependencies.jar org.uma.jmetalmsa.runner.MOSAStrERunnerBAliBASE balibaseProblemName dataDirectory NumberOfEvaluations PopulationSize
 ```
 * balibaseProblemName: the BAliBASE instance name, for instance `BB12001`. 
 * dataDirectory: The Path that contains the Structural Information files (PDB's (*.pdb) and Strike Contact Matrix (*.contacts)) of the sequences to align and the Pre-Computed alignments to use to generate the Initial population of the algorithm.  
 * NumberOfEvaluations: Number of the Maximun Evaluations of the algorithm.
 * PopulationSize: Size of the population of the algorithm
-* NumberOfCores: Number of cores to use for the execution of the Algorithm, greater than 1 enable the Parallel features.
 
 For solving BAliBASE problems, jMetalMSA searches the Sequences Files in FASTA format, the Contacts files and the pre-computed alignments, as follows:
 
