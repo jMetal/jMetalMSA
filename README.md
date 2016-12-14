@@ -1,3 +1,0 @@
-# jMetalMSA: a framework for solving Multiple Sequence Alignment problems with Multi-Objective metaheuristics
-
-Work in progress ...
