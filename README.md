@@ -1,8 +1,22 @@
 # jMetalMSA: a framework for solving Multiple Sequence Alignment problems with Multi-Objective metaheuristics
 
-jMetalMSA is a software project aimed at solving multiple sequence alignment (MSA) problems by using multi-objective metaheuristics. It is based on the jMetal multi-objective framework, which is extended with an encoding for representing MSA solutions. 
+jMetalMSA is an Open source software tool aimed at solving multiple sequence alignment (MSA) problems by using multi-objective metaheuristics. It is based on the jMetal multi-objective framework, which is extended with an encoding for representing MSA solutions. 
 
-Currently it contains an implementation of the NSGA-II algorithm configured with a single-point crossover and shift closed gaps mutation operators, and three objectives to optimize: STRIKE, percentage of alignment columns and percentage of non gaps. These settings corresponds to the [MOSAStrE algorithm](http://bioinformatics.oxfordjournals.org/content/early/2013/06/21/bioinformatics.btt360.abstract). 
+##Architecture of jMetalMSA
+
+The object-oriented architecture of jMetalMSA is shown in Fig. 1, where we can observe that it is composed of four
+core classes (Java interfaces). Three of them (MSAProblem, MSAAlgorithm, and
+MSASolution) inherits from their counterparts in jMetal (the inheritance rela-
+3 jMetalMSA project in GitHub: http://github.com/jmetal/jmetalmsa
+tionships are omitted in the diagram), and there is a class Score to represent a
+given MSA scoring function.
+
+Architecture of jMetalMSA (some inheritance associations have been not included
+to simplify the diagram).
+
+##List of Algorithms
+
+Contains an implementation of the NSGA-II algorithm configured with a single-point crossover and shift closed gaps mutation operators, and three objectives to optimize: STRIKE, percentage of alignment columns and percentage of non gaps. These settings corresponds to the [MOSAStrE algorithm](http://bioinformatics.oxfordjournals.org/content/early/2013/06/21/bioinformatics.btt360.abstract). 
 
 ## Summary of features
 jMetalMSA contains the following features:
