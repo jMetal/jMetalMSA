@@ -71,7 +71,6 @@ public class MOSAStrERunner {
     Integer populationSize = Integer.parseInt(args[4]);
     Integer numberOfCores = Integer.parseInt(args[5]);
 
-    
     crossover = new SPXMSACrossover(0.8);
     mutation = new ShiftClosedGapsMSAMutation(0.2);
     selection = new BinaryTournamentSelection(new RankingAndCrowdingDistanceComparator());
@@ -122,9 +121,9 @@ public class MOSAStrERunner {
       }
     }
 
-    DefaultFileOutputContext varFile = new  DefaultFileOutputContext("VAR." + msaFile +"." + algorithm.getName()+ ".tsv");
+    DefaultFileOutputContext varFile = new  DefaultFileOutputContext("VAR.tsv");
     varFile.setSeparator("\n");
-    DefaultFileOutputContext funFile = new  DefaultFileOutputContext("FUN." + msaFile +"." + algorithm.getName()+ ".tsv");
+    DefaultFileOutputContext funFile = new  DefaultFileOutputContext("FUN.tsv");
     funFile.setSeparator("\t");
 
    
