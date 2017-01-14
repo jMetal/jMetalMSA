@@ -33,7 +33,6 @@ import org.uma.jmetal.util.evaluator.impl.MultithreadedSolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetal.util.experiment.Experiment;
 import org.uma.jmetal.util.experiment.ExperimentBuilder;
-import org.uma.jmetal.util.experiment.component.ExecuteAlgorithms;
 import org.uma.jmetal.util.experiment.util.TaggedAlgorithm;
 import org.uma.jmetal.util.neighborhood.impl.L5;
 import org.uma.jmetalmsa.algorithm.gwasfga.GWASFGAMSA;
@@ -45,13 +44,23 @@ import org.uma.jmetalmsa.crossover.SPXMSACrossover;
 import org.uma.jmetalmsa.mutation.ShiftClosedGapsMSAMutation;
 import org.uma.jmetalmsa.score.impl.PercentageOfAlignedColumnsScore;
 import org.uma.jmetalmsa.score.impl.SumOfPairsScore;
-import org.uma.jmetalmsa.problem.MSAProblem;
 import org.uma.jmetalmsa.util.distancematrix.impl.PAM250;
 import org.uma.jmetalmsa.solution.MSASolution;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.uma.jmetal.operator.impl.selection.RandomSelection;
+import org.uma.jmetal.qualityindicator.impl.Hypervolume;
+import org.uma.jmetal.qualityindicator.impl.hypervolume.WFGHypervolume;
+import org.uma.jmetal.util.archive.impl.HypervolumeArchive;
+import org.uma.jmetal.util.experiment.component.ComputeQualityIndicators;
+import org.uma.jmetal.util.experiment.component.GenerateBoxplotsWithR;
+import org.uma.jmetal.util.experiment.component.GenerateFriedmanTestTables;
+import org.uma.jmetal.util.experiment.component.GenerateLatexTablesWithStatistics;
+import org.uma.jmetal.util.experiment.component.GenerateReferenceParetoFront;
+import org.uma.jmetal.util.experiment.component.GenerateWilcoxonTestTablesWithR;
+import org.uma.jmetalmsa.algorithm.smsemoa.SMSEMOAMSABuilder;
 import org.uma.jmetalmsa.problem.BAliBASE_MSAProblem;
 import org.uma.jmetalmsa.score.Score;
 
@@ -86,17 +95,17 @@ public class IJISExperiment {
     /*if (args.length != 8) {
       throw new JMetalException("Needed arguments: experimentBaseDirectory  Algorithm RVGroup InitialProblem FinalProblem NumberOfCores INDEPENDENT_RUNS ") ;
     }*/
-    String experimentBaseDirectory = args[0] ;
-    String dataBaseDirectory = args[1]; //"/home/cristian/msa/msajmetalbiojava/"; 
-    Algorithm = args[2];
-    String RV = args[3] ;
-    Integer Start =Integer.parseInt(args[4]) ;
-    Integer End =  Integer.parseInt(args[5]) ;
-    Integer NumCores = Integer.parseInt(args[6]) ; //40
-    Integer INDEPENDENT_RUNS = Integer.parseInt(args[7]); //10
-    Integer MaxEvals = Integer.parseInt(args[8]) ;  //25000
-    Integer populationSize = Integer.parseInt(args[9]) ; //100
-    boolean Multithreaded=Integer.parseInt(args[10])==1?true:false;  //0
+    String experimentBaseDirectory = args[0] ;//"E:\\Artículos\\ijis-2016";
+    String dataBaseDirectory = args[1]; //"C:\\msa";  //"/home/cristian/msa/msajmetalbiojava/"; 
+    Algorithm = args[2]; //"MOCELL"; 
+    String RV = "40"; //args[3] ; //"12"; //
+    Integer Start = 14; //Integer.parseInt(args[4]);  //10; //
+    Integer End = 14; //Integer.parseInt(args[5]) ; //10; //
+    Integer NumCores = Integer.parseInt(args[6]) ; //6; // //40
+    Integer INDEPENDENT_RUNS = Integer.parseInt(args[7]); //10; // //10
+    Integer MaxEvals = Integer.parseInt(args[8]); //25000; //  //25000
+    Integer populationSize = Integer.parseInt(args[9]); //100; // //100
+    boolean Multithreaded= Integer.parseInt(args[10])==1?true:false;  //0
 
     
     CrossoverOperator<MSASolution> crossover = new SPXMSACrossover(0.8);
@@ -117,13 +126,13 @@ public class IJISExperiment {
                 NumCores,Multithreaded) ;
 
     Experiment<MSASolution, List<MSASolution>> experiment =
-        new ExperimentBuilder<MSASolution, List<MSASolution>>("ijisStudy")
+        new ExperimentBuilder<MSASolution, List<MSASolution>>("ijisStudyconjMetalMSA")
             .setAlgorithmList(algorithmList)
             .setProblemList(problemList)
             .setExperimentBaseDirectory(experimentBaseDirectory)
             .setOutputParetoFrontFileName("FUN")
             .setOutputParetoSetFileName("VAR")
-            .setReferenceFrontDirectory(experimentBaseDirectory + "/ijisStudy2/referenceFront")
+            .setReferenceFrontDirectory(experimentBaseDirectory + "/ijisStudyconjMetalMSA/referenceFront")
             .setIndicatorList(Arrays.asList(
                 new Epsilon<MSASolution>(), new Spread<MSASolution>(), new GenerationalDistance<MSASolution>(),
                 new PISAHypervolume<MSASolution>(),
@@ -134,15 +143,15 @@ public class IJISExperiment {
             .setNumberOfCores(NumCores)
             .build();
 
-    new ExecuteAlgorithms<>(experiment).run();
+   //new ExecuteAlgorithms<>(experiment).run();
     // new PrintMSAs(experiment).run();
       
-   // new GenerateReferenceParetoFront(experiment).run();
-   // new ComputeQualityIndicators<>(experiment).run() ;
-   // new GenerateLatexTablesWithStatistics(experiment).run() ;
-    //new GenerateWilcoxonTestTablesWithR<>(experiment).run() ;
-    //new GenerateFriedmanTestTables<>(experiment).run();
-   // new GenerateBoxplotsWithR<>(experiment).setRows(1).setColumns(2).setDisplayNotch().run();
+    new GenerateReferenceParetoFront(experiment).run();
+    new ComputeQualityIndicators<>(experiment).run() ;
+    new GenerateLatexTablesWithStatistics(experiment).run() ;
+   new GenerateWilcoxonTestTablesWithR<>(experiment).run() ;
+   new GenerateFriedmanTestTables<>(experiment).run();
+    new GenerateBoxplotsWithR<>(experiment).setRows(1).setColumns(2).setDisplayNotch().run();
   }
 
   
@@ -198,7 +207,7 @@ public class IJISExperiment {
 
     for (int run = 0; run < independentRuns; run++) {
 
-        if(Algorithm.equals("NSGAII")){
+        //if(Algorithm.equals("NSGAII")){
           for (Problem<MSASolution> problem : problemList) {
                
               SolutionListEvaluator<MSASolution> Evaluator;
@@ -218,31 +227,31 @@ public class IJISExperiment {
 
               algorithms.add(new TaggedAlgorithm<List<MSASolution>>(algorithm, problem, run));
           }
-       }
+       //}
 
-      if(Algorithm.equals("ssNSGAII")){
-          for (Problem<MSASolution> problem : problemList) {
-              
-                SolutionListEvaluator<MSASolution> Evaluator;
-                if (Multithreaded){
-                    Evaluator=new MultithreadedSolutionListEvaluator<MSASolution>(NumCores, problem);
-                }else{
-                    Evaluator=new SequentialSolutionListEvaluator<MSASolution>();
-                }
+//      if(Algorithm.equals("ssNSGAII")){
+//          for (Problem<MSASolution> problem : problemList) {
+//              
+//                SolutionListEvaluator<MSASolution> Evaluator;
+//                if (Multithreaded){
+//                    Evaluator=new MultithreadedSolutionListEvaluator<MSASolution>(NumCores, problem);
+//                }else{
+//                    Evaluator=new SequentialSolutionListEvaluator<MSASolution>();
+//                }
+//
+//                Algorithm<List<MSASolution>> algorithm = new NSGAIIMSABuilder(problem,
+//                    crossover, mutation, NSGAIIVariant.SteadyStateNSGAII)
+//                    .setSelectionOperator(selection)
+//                    .setMaxEvaluations(MaxEvals)
+//                    .setPopulationSize(popSize)
+//                    .setSolutionListEvaluator(Evaluator)
+//                    .build();
+//
+//                algorithms.add(new TaggedAlgorithm<List<MSASolution>>(algorithm, problem, run));
+//          }
+//       }
 
-                Algorithm<List<MSASolution>> algorithm = new NSGAIIMSABuilder(problem,
-                    crossover, mutation, NSGAIIVariant.SteadyStateNSGAII)
-                    .setSelectionOperator(selection)
-                    .setMaxEvaluations(MaxEvals)
-                    .setPopulationSize(popSize)
-                    .setSolutionListEvaluator(Evaluator)
-                    .build();
-
-                algorithms.add(new TaggedAlgorithm<List<MSASolution>>(algorithm, problem, run));
-          }
-       }
-
-        if(Algorithm.equals("MOCELL")){
+        //if(Algorithm.equals("MOCELL")){
 
           for (Problem<MSASolution> problem : problemList) {
 
@@ -255,6 +264,7 @@ public class IJISExperiment {
                 
                 Algorithm<List<MSASolution>> algorithm = new MOCellMSABuilder(problem,
                     crossover, mutation)
+                    .setArchive(new HypervolumeArchive<>(popSize, new WFGHypervolume<MSASolution>()))
                     .setSelectionOperator(selection)
                     .setMaxEvaluations(MaxEvals)
                     .setPopulationSize(popSize)
@@ -265,9 +275,9 @@ public class IJISExperiment {
 
                 algorithms.add(new TaggedAlgorithm<List<MSASolution>>(algorithm, problem, run));
           }
-       }
+       //}
 
-        if(Algorithm.equals("SPEA2")){
+       //if(Algorithm.equals("SPEA2")){
 
           for (Problem<MSASolution> problem : problemList) {
 
@@ -288,9 +298,9 @@ public class IJISExperiment {
 
                 algorithms.add(new TaggedAlgorithm<List<MSASolution>>(algorithm, problem, run));
           }
-       }
+      // }
 
-        if(Algorithm.equals("MOEAD")){
+        //if(Algorithm.equals("MOEAD")){
 
             for (Problem<MSASolution>  problem : problemList) {
 
@@ -310,28 +320,30 @@ public class IJISExperiment {
 
               algorithms.add(new TaggedAlgorithm<List<MSASolution>>(algorithm, problem,run));
             }
-         }
-/*
-          if(Algorithm.equals("SMSEMOA")){
+         //}
+
+         //if(Algorithm.equals("SMSEMOA")){
 
             Hypervolume<MSASolution> hypervolume;
             for (Problem<MSASolution> problem : problemList) {
+                
                 hypervolume = new PISAHypervolume<>();
                 hypervolume.setOffset(100.0);
 
-                Algorithm<List<MSASolution>> algorithm = new SMSEMOAMSABuilder(problem, crossover, mutation,
-                    hypervolume)
+                Algorithm<List<MSASolution>> algorithm = new SMSEMOAMSABuilder(problem, crossover, mutation)
                     .setSelectionOperator(new RandomSelection<MSASolution>())
                     .setMaxEvaluations(MaxEvals)
                     .setPopulationSize(popSize)
+                    .setHypervolumeImplementation(hypervolume)
+                    .setOffset(100)
                     .build();
 
 
                 algorithms.add(new TaggedAlgorithm<List<MSASolution>>(algorithm, problem, run));
             }
-       }
-*/
-        if(Algorithm.equals("GWASFGA")){
+       //}
+
+        //if(Algorithm.equals("GWASFGA")){
 
             for (Problem<MSASolution> problem : problemList) {
 
@@ -348,7 +360,7 @@ public class IJISExperiment {
                 algorithms.add(new TaggedAlgorithm<List<MSASolution>>(algorithm, problem, run));
             }
 
-         }
+         //}
     //
     //        if(Algorithm.equals("MOCHC")){
     //
