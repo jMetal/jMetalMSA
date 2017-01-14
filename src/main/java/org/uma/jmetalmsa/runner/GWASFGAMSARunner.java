@@ -31,13 +31,12 @@ import org.uma.jmetalmsa.solution.MSASolution;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetalmsa.score.impl.PercentageOfAlignedColumnsScore;
-import org.uma.jmetalmsa.score.impl.PercentageOfNonGapsScore;
-import org.uma.jmetalmsa.score.impl.StrikeScore;
 import org.uma.jmetalmsa.problem.BAliBASE_MSAProblem;
 import org.uma.jmetalmsa.score.Score;
+import org.uma.jmetalmsa.score.impl.SumOfPairsScore;
+import org.uma.jmetalmsa.util.distancematrix.impl.PAM250;
 
 
 /**
@@ -57,14 +56,19 @@ public class GWASFGAMSARunner {
     MutationOperator<MSASolution> mutation;
     SelectionOperator selection;
 
-    if (args.length != 4) {
-      throw new JMetalException("Wrong number of arguments") ;
-    }
+//    if (args.length != 4) {
+//      throw new JMetalException("Wrong number of arguments") ;
+//    }
+//
+//    String instance = args[0];
+//    String dataDirectory = args[1];
+//    Integer maxEvaluations = Integer.parseInt(args[2]);
+//    Integer populationSize = Integer.parseInt(args[3]);
 
-    String instance = args[0];
-    String dataDirectory = args[1];
-    Integer maxEvaluations = Integer.parseInt(args[2]);
-    Integer populationSize = Integer.parseInt(args[3]);
+    String instance = "BB11001";
+    String dataDirectory = "C:/msa";
+    Integer maxEvaluations = 250;
+    Integer populationSize = 100;
 
     crossover = new SPXMSACrossover(0.8);
     mutation = new ShiftClosedGapsMSAMutation(0.2);
@@ -72,14 +76,17 @@ public class GWASFGAMSARunner {
 
     List<Score> scoreList = new ArrayList<>();
 
-    StrikeScore objStrike = new StrikeScore();
-    scoreList.add(objStrike);
+    scoreList.add(new SumOfPairsScore(new PAM250()));
     scoreList.add(new PercentageOfAlignedColumnsScore());
-    scoreList.add(new PercentageOfNonGapsScore());
+            
+    //StrikeScore objStrike = new StrikeScore();
+    //scoreList.add(objStrike);
+    //scoreList.add(new PercentageOfAlignedColumnsScore());
+    //scoreList.add(new PercentageOfNonGapsScore());
 
     problem = new BAliBASE_MSAProblem(instance, dataDirectory, scoreList);
 
-    objStrike.initializeParameters(problem.PDBPath, problem.getListOfSequenceNames());
+    //objStrike.initializeParameters(problem.PDBPath, problem.getListOfSequenceNames());
 
     SolutionListEvaluator<MSASolution> evaluator;
 

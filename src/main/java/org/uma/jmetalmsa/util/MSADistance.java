@@ -1,5 +1,7 @@
 package org.uma.jmetalmsa.util;
 
+import org.uma.jmetalmsa.solution.MSASolution;
+
 public class MSADistance {
 
   public static final int LevenshteinDistance = 1;
@@ -81,5 +83,19 @@ public class MSADistance {
     distance += MaxLen - MinLen;
     return distance;
   }
+  
+  
+   public double getLevenshteinDistance(MSASolution solA, MSASolution solB) {
+        double distance=0.0;
+        
+        char [][]decodedSequencesA = solA.decodeToMatrix();
+        char [][]decodedSequencesB = solB.decodeToMatrix();
+                
+        for (int j = 0; j < solA.getNumberOfVariables(); ++j) {
+            distance+= getLevenshteinDistance(decodedSequencesA[j],decodedSequencesB[j]);
+      }
+       
+       return distance;
+   }
 }
  

@@ -43,11 +43,11 @@ public class MOCellMSA extends MOCell<MSASolution> {
 
   @Override
   public String getName() {
-    return "MOCellMSA";
+    return "MOCell";
   }
 
   @Override
   public String getDescription() {
-    return "MOCellMSA";
+    return "MOCell";
   }
 }

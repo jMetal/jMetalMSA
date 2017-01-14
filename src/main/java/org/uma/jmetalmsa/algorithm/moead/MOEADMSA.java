@@ -123,7 +123,7 @@ public class MOEADMSA extends AbstractMOEAD<MSASolution> {
 
   @Override
   public String getName() {
-    return "MOEADMSA";
+    return "MOEAD";
   }
 
   @Override

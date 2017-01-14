@@ -74,7 +74,6 @@ public class NSGAIIIRunner {
     selection = new BinaryTournamentSelection(new RankingAndCrowdingDistanceComparator());
 
     List<Score> scoreList = new ArrayList<>();
-
     StrikeScore objStrike = new StrikeScore();
     scoreList.add(objStrike);
     scoreList.add(new PercentageOfAlignedColumnsScore());

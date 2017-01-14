@@ -1,62 +1,40 @@
-//  This program is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU Lesser General Public License as published by
-//  the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU Lesser General Public License for more details.
-// 
-//  You should have received a copy of the GNU Lesser General Public License
-//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 package org.uma.jmetalmsa.runner;
 
+import java.util.ArrayList;
 import org.uma.jmetal.algorithm.Algorithm;
-import org.uma.jmetal.algorithm.multiobjective.nsgaii.NSGAIIBuilder.NSGAIIVariant;
+import org.uma.jmetal.util.AlgorithmRunner;
+import org.uma.jmetal.util.JMetalLogger;
+
+import java.util.List;
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.SelectionOperator;
 import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
-import org.uma.jmetal.util.AlgorithmRunner;
 import org.uma.jmetal.util.JMetalException;
-import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
-import org.uma.jmetal.util.evaluator.impl.MultithreadedSolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
 import org.uma.jmetal.util.fileoutput.SolutionListOutput;
 import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
-import org.uma.jmetalmsa.algorithm.nsgaii.NSGAIIMSABuilder;
+import org.uma.jmetalmsa.algorithm.movmomsa.MOVMOMSABuilder;
 import org.uma.jmetalmsa.crossover.SPXMSACrossover;
 import org.uma.jmetalmsa.mutation.ShiftClosedGapsMSAMutation;
-import org.uma.jmetalmsa.score.impl.PercentageOfAlignedColumnsScore;
-import org.uma.jmetalmsa.score.impl.PercentageOfNonGapsScore;
-import org.uma.jmetalmsa.score.impl.StrikeScore;
-import org.uma.jmetalmsa.score.impl.SumOfPairsScore;
 import org.uma.jmetalmsa.problem.BAliBASE_MSAProblem;
 import org.uma.jmetalmsa.problem.MSAProblem;
-import org.uma.jmetalmsa.problem.Standard_MSAProblem;
+import org.uma.jmetalmsa.score.Score;
+import org.uma.jmetalmsa.score.impl.PercentageOfAlignedColumnsScore;
+import org.uma.jmetalmsa.score.impl.SumOfPairsScore;
 import org.uma.jmetalmsa.solution.MSASolution;
 import org.uma.jmetalmsa.util.distancematrix.impl.PAM250;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.uma.jmetalmsa.score.Score;
-
-
 /**
- * Class to configure and run the MOSAStrE (NSGA-II) algorithm
- *
- * @author Antonio J. Nebro <antonio@lcc.uma.es>
+ * This class is the main program used to configure and run MOVMO
+ *   @author R. Villarroel, K. Onofre, C. Guanoquiza
  */
-public class NSGAIIRunner {
-  /**
-   * Arguments: msaFileName,  dataDirectory, preComputedAlignments, maxEvaluations populationSize
-   * @param args Command line arguments.
-   */
+public class MOVMOMSARunner {
+
   public static void main(String[] args) throws Exception {
+      
     MSAProblem problem;
     Algorithm<List<MSASolution>> algorithm;
     CrossoverOperator<MSASolution> crossover;
@@ -66,7 +44,7 @@ public class NSGAIIRunner {
 //    if (args.length != 4) {
 //      throw new JMetalException("Wrong number of arguments") ;
 //    }
-//
+
 //    String problemName = args[0];
 //    String dataDirectory = args[1];
 //    Integer maxEvaluations = Integer.parseInt(args[2]);
@@ -74,11 +52,11 @@ public class NSGAIIRunner {
 
     String problemName = "BB11001";
     String dataDirectory = "C:/msa";
-    Integer maxEvaluations = 25000;
+    Integer maxEvaluations = 5000;
     Integer populationSize = 100;
-    
+
     crossover = new SPXMSACrossover(0.8);
-    mutation = new ShiftClosedGapsMSAMutation(0.2);
+    mutation = new ShiftClosedGapsMSAMutation(1);
     selection = new BinaryTournamentSelection(new RankingAndCrowdingDistanceComparator());
 
     List<Score> scoreList = new ArrayList<>();
@@ -92,13 +70,13 @@ public class NSGAIIRunner {
 
     evaluator = new SequentialSolutionListEvaluator<>();
 
-    algorithm = new NSGAIIMSABuilder(problem, crossover, mutation, NSGAIIVariant.NSGAII)
-            .setSelectionOperator(selection)
-            .setMaxEvaluations(maxEvaluations)
-            .setPopulationSize(populationSize)
-            .setSolutionListEvaluator(evaluator)
-            .build();
-
+    algorithm = new MOVMOMSABuilder(problem,crossover, mutation, selection)
+                .setMaxEvaluations(maxEvaluations)
+                .setPopulationSize(populationSize)
+                .setNeighborhoodSize(4)
+                .setArchiveSize(100)
+                .setBeta(0.0)
+                .build();
 
     AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(algorithm)
             .execute();
@@ -127,5 +105,6 @@ public class NSGAIIRunner {
             .setFunFileOutputContext(funFile)
             .print();
     evaluator.shutdown();
+
   }
 }
