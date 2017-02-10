@@ -19,6 +19,7 @@ import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.SelectionOperator;
 import org.uma.jmetal.operator.impl.selection.BinaryTournamentSelection;
 import org.uma.jmetal.util.AlgorithmRunner;
+import org.uma.jmetal.util.JMetalException;
 import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 import org.uma.jmetal.util.evaluator.SolutionListEvaluator;
 import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
@@ -40,7 +41,7 @@ import org.uma.jmetalmsa.util.distancematrix.impl.PAM250;
 
 
 /**
- * Class to configure and run the NSGA-II algorithm
+ * Class to configure and run the GWASFGA algorithm
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
@@ -56,19 +57,14 @@ public class GWASFGAMSARunner {
     MutationOperator<MSASolution> mutation;
     SelectionOperator selection;
 
-//    if (args.length != 4) {
-//      throw new JMetalException("Wrong number of arguments") ;
-//    }
-//
-//    String instance = args[0];
-//    String dataDirectory = args[1];
-//    Integer maxEvaluations = Integer.parseInt(args[2]);
-//    Integer populationSize = Integer.parseInt(args[3]);
+    if (args.length != 4) {
+      throw new JMetalException("Wrong number of arguments") ;
+    }
 
-    String instance = "BB11001";
-    String dataDirectory = "C:/msa";
-    Integer maxEvaluations = 250;
-    Integer populationSize = 100;
+    String problemName = args[0];
+    String dataDirectory = args[1];
+    Integer maxEvaluations = Integer.parseInt(args[2]);
+    Integer populationSize = Integer.parseInt(args[3]);
 
     crossover = new SPXMSACrossover(0.8);
     mutation = new ShiftClosedGapsMSAMutation(0.2);
@@ -84,7 +80,7 @@ public class GWASFGAMSARunner {
     //scoreList.add(new PercentageOfAlignedColumnsScore());
     //scoreList.add(new PercentageOfNonGapsScore());
 
-    problem = new BAliBASE_MSAProblem(instance, dataDirectory, scoreList);
+    problem = new BAliBASE_MSAProblem(problemName, dataDirectory, scoreList);
 
     //objStrike.initializeParameters(problem.PDBPath, problem.getListOfSequenceNames());
 
@@ -109,10 +105,10 @@ public class GWASFGAMSARunner {
         }
       }
     }
-       
-    DefaultFileOutputContext varFile = new  DefaultFileOutputContext("VAR.tsv");
+
+    DefaultFileOutputContext varFile = new  DefaultFileOutputContext("VAR." + problemName +"." + algorithm.getName()+ ".tsv");
     varFile.setSeparator("\n");
-    DefaultFileOutputContext funFile = new  DefaultFileOutputContext("FUN.tsv");
+    DefaultFileOutputContext funFile = new  DefaultFileOutputContext("FUN." + problemName +"." + algorithm.getName()+ ".tsv");
     funFile.setSeparator("\t");
      
     new SolutionListOutput(population)
