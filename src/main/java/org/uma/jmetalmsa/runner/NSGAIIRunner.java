@@ -86,10 +86,7 @@ public class NSGAIIRunner {
     SolutionListEvaluator<MSASolution> evaluator;
 
     evaluator = new SequentialSolutionListEvaluator<>();
-
-    int numberOfThreads = 4 ;
-    System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", ""+ numberOfThreads);
-
+    
     algorithm = new NSGAIIMSABuilder(problem, crossover, mutation, NSGAIIVariant.NSGAII)
             .setSelectionOperator(selection)
             .setMaxEvaluations(maxEvaluations)
