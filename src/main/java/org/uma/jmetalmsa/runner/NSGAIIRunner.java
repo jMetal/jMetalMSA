@@ -86,7 +86,7 @@ public class NSGAIIRunner {
     SolutionListEvaluator<MSASolution> evaluator;
 
     evaluator = new SequentialSolutionListEvaluator<>();
-    
+
     algorithm = new NSGAIIMSABuilder(problem, crossover, mutation, NSGAIIVariant.NSGAII)
             .setSelectionOperator(selection)
             .setMaxEvaluations(maxEvaluations)
