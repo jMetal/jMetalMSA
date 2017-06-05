@@ -24,12 +24,12 @@ The list of metaheuristics currently available in jMetalMSA include the evolutio
 * MOCell [7]
 * GWASF-GA [8].
 
-##Crossover Operator
+## Crossover Operator
 The crossover operator is the Single-Point Crossover adapted to alignments, randomly selects a position from the parent A
 by splitting it into two blocks and the parent B is tailored so that the right piece can be joined to the left piece of 
 the first parent (PA1) and vice versa. Selected blocks are crossed between these two parents
 
-##Mutation Operators
+## Mutation Operators
 The list of mutation operators included in jMetalMSA are:
 * Shift-closed gaps: Closed gaps are randomly chosen and shifted to another position.
 * Non-gap group splitting: a non-gap group is selected randomly, and it is split into two groups.
@@ -37,7 +37,7 @@ The list of mutation operators included in jMetalMSA are:
 * Two adjacent gap groups merging: Selects a random group of gaps and merge with its nearest group of gaps.
 * Multiple mutation 
 
-##Scores
+## Scores
 The scores that are currently available in jMetalMSA are:
 * Sum of Pairs
 * Weighted Sum of Pairs with Affine Gaps
@@ -108,8 +108,7 @@ For solving BAliBASE problems, jMetalMSA searches the Sequences Files in FASTA f
 * Balibase Directory: dataDirectory + /bb3_release/ + Group + /
 * Directory with the PreAlignments:  dataDirectory + /aligned/ + Group + / + balibaseProblemName;
 
-
-##Results 
+## Results 
 
 The output of the program are two files:
 * `VAR.tsv`: contains the Pareto front approximation. For each solution, this file contains a line with the values of the three objectives.
