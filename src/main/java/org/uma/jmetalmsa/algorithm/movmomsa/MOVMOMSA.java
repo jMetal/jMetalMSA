@@ -45,6 +45,8 @@ public class MOVMOMSA<S extends MSASolution> implements Algorithm<List<S>> {
     private SelectionOperator selectionOperator;
 
     protected int archiveSize;
+    
+    List<MSASolution> population;
 
     public MOVMOMSA(
             int populationSize,
@@ -77,6 +79,7 @@ public class MOVMOMSA<S extends MSASolution> implements Algorithm<List<S>> {
 
     public List<S> getResult() {
         return SolutionListUtils.getNondominatedSolutions((List<S>) archive.getSolutionList());
+        //return SolutionListUtils.getNondominatedSolutions((List<S>) population);
     }
 
     protected void updateArchiveCrowdingDistances() {
@@ -145,8 +148,9 @@ public class MOVMOMSA<S extends MSASolution> implements Algorithm<List<S>> {
                 if (o1.d > o2.d) {
                     return 1;
                 }
-                //return dominance.compare(o1.s, o2.s);
-                return 0;
+                int r=dominance.compare(o1.s, o2.s);
+                //System.out.println(dominance.compare(o1.s, o2.s));
+                return r;
             }
         });
         
@@ -163,7 +167,7 @@ public class MOVMOMSA<S extends MSASolution> implements Algorithm<List<S>> {
     
     public void run() {
 
-        List<MSASolution> population;
+        
         MSASolution solution;
         MSASolution a, local, global, x;
 
@@ -171,12 +175,18 @@ public class MOVMOMSA<S extends MSASolution> implements Algorithm<List<S>> {
         population = new ArrayList<MSASolution>(populationSize);
         
         population = ((MSAProblem) problem_).createInitialPopulation(populationSize);
-        
+        evaluations=0;
         for (int i = 0; i < populationSize; i++) {
-            archive.add(new MSASolution(population.get(i)));
+            solution=population.get(i);
+            ((MSAProblem)problem_).evaluate(solution);
+            evaluations++;
+            archive.add(new MSASolution(solution));
         }
-        evaluations=populationSize;
+        
+        System.out.println("population " + population.size());
+        System.out.println("archive " + archive.size());
         updateArchiveCrowdingDistances();
+        System.out.println("archive " + archive.size());
 
         // Generations
         while (evaluations < maxEvaluations) {
@@ -190,6 +200,7 @@ public class MOVMOMSA<S extends MSASolution> implements Algorithm<List<S>> {
                 local = selectBestFrom(neighbors);
 
                 if (dominance.compare(local, a) < 0) {
+                     //local = crossSolutions(a, local);
                      local = crossSolutions(a, local);
                      //mutationOperator.execute(local);
                 } else {
@@ -205,7 +216,7 @@ public class MOVMOMSA<S extends MSASolution> implements Algorithm<List<S>> {
                 x = crossSolutions(local, global);
 
                 //mutation
-//				mutation.execute(x);
+		mutationOperator.execute(x);
                 // evaluation....
                 problem_.evaluate(x);
 //				problem_.evaluateConstraints(x); NO Existe Ver IBEA Algorithm
@@ -213,11 +224,14 @@ public class MOVMOMSA<S extends MSASolution> implements Algorithm<List<S>> {
 
                 // updating leaders archive
                 archive.add(new MSASolution(x));
+                
                 updateArchiveCrowdingDistances();
+                System.out.println("archive " + archive.size()  + " Max  Size " +  archive.getMaxSize());
 
                 // dynamic population updating 
                 if (dominance.compare(x, a) <= 0) {
                     population.set(i, x);
+                    System.out.println("Mejoró X a A" );
                 }
                 
                 System.out.println(evaluations);
@@ -243,4 +257,6 @@ public class MOVMOMSA<S extends MSASolution> implements Algorithm<List<S>> {
     public String getDescription() {
         return "MOVMO";
     }
+    
+    
 }

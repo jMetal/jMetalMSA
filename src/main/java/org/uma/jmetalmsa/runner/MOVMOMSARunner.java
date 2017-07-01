@@ -55,7 +55,7 @@ public class MOVMOMSARunner {
     Integer maxEvaluations = 5000;
     Integer populationSize = 100;
 
-    crossover = new SPXMSACrossover(0.8);
+    crossover = new SPXMSACrossover(1);
     mutation = new ShiftClosedGapsMSAMutation(1);
     selection = new BinaryTournamentSelection(new RankingAndCrowdingDistanceComparator());
 

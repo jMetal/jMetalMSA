@@ -28,7 +28,12 @@ public class testObjetives {
      public static void main(String[] args) throws Exception {
              
 
-     EvaluaGroup(1,"BB110");
+     EvaluaGroup(38,"BB110");
+     EvaluaGroup(44,"BB120");
+     EvaluaGroup(41,"BB200");
+     EvaluaGroup(30,"BB300");
+     EvaluaGroup(49,"BB400");
+     EvaluaGroup(16,"BB500");
     
       
        
@@ -48,19 +53,19 @@ public class testObjetives {
             scoreList.add(objStrike) ;
             scoreList.add(new PercentageOfAlignedColumnsScore()) ;
             scoreList.add(new PercentageOfNonGapsScore());
-            problem = new  BAliBASE_MSAProblem(Instance, "/home/cristian/msa/msajmetalbiojava", scoreList) ;
+            problem = new  BAliBASE_MSAProblem(Instance, "C:/msa", scoreList) ;
          
             objStrike.initializeParameters(problem.PDBPath, problem.getListOfSequenceNames());
             
-            EvaluaAlig(problem.PreComputedPath + ".tfa_clu");
-            EvaluaAlig(problem.PreComputedPath + ".tfa_muscle");
-            EvaluaAlig(problem.PreComputedPath + ".tfa_kalign");
-            EvaluaAlig(problem.PreComputedPath + ".tfa_retalign");
-            EvaluaAlig(problem.PreComputedPath + ".fasta_aln");
-            EvaluaAlig(problem.PreComputedPath + ".tfa_probcons");
-            EvaluaAlig(problem.PreComputedPath + ".tfa_mafft");
-            EvaluaAlig(problem.PreComputedPath + ".tfa_fsa");
-            EvaluaAlig(problem.PreComputedPath + ".msf_tfa");
+            EvaluaAlig(problem.PreComputedPath + ".tfa_3dtcoffee");
+//            EvaluaAlig(problem.PreComputedPath + ".tfa_muscle");
+//            EvaluaAlig(problem.PreComputedPath + ".tfa_kalign");
+//            EvaluaAlig(problem.PreComputedPath + ".tfa_retalign");
+//            EvaluaAlig(problem.PreComputedPath + ".fasta_aln");
+//            EvaluaAlig(problem.PreComputedPath + ".tfa_probcons");
+//            EvaluaAlig(problem.PreComputedPath + ".tfa_mafft");
+//            EvaluaAlig(problem.PreComputedPath + ".tfa_fsa");
+//            EvaluaAlig(problem.PreComputedPath + ".msf_tfa");
      }
     }
                 

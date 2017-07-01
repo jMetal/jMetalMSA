@@ -72,7 +72,7 @@ public class NSGAIIRunner {
 //    Integer maxEvaluations = Integer.parseInt(args[2]);
 //    Integer populationSize = Integer.parseInt(args[3]);
 
-    String problemName = "BB11001";
+    String problemName = "BB11002";
     String dataDirectory = "C:/msa";
     Integer maxEvaluations = 25000;
     Integer populationSize = 100;
