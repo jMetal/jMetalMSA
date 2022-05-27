@@ -23,7 +23,6 @@ public class MSAProblem extends DynamicallyComposedProblem<MSASolution> {
   public List<List<ArrayChar>> listOfPrecomputedStringAlignments;
   public List<StringBuilder> listOfSequenceNames;
 
-
   /**
    * Constructor
    */

@@ -63,32 +63,12 @@ public class NSGAIIRunner {
     MutationOperator<MSASolution> mutation;
     SelectionOperator selection;
 
-<<<<<<< HEAD
-//    if (args.length != 4) {
-//      throw new JMetalException("Wrong number of arguments") ;
-//    }
-//
-//    String problemName = args[0];
-//    String dataDirectory = args[1];
-//    Integer maxEvaluations = Integer.parseInt(args[2]);
-//    Integer populationSize = Integer.parseInt(args[3]);
 
     String problemName = "BB11002";
-    String dataDirectory = "C:/msa";
+    String dataDirectory = "example";
     Integer maxEvaluations = 25000;
     Integer populationSize = 100;
-    
-=======
-    if (args.length != 4) {
-      throw new JMetalException("Wrong number of arguments") ;
-    }
 
-    String problemName = args[0];
-    String dataDirectory = args[1];
-    Integer maxEvaluations = Integer.parseInt(args[2]);
-    Integer populationSize = Integer.parseInt(args[3]);
-
->>>>>>> e6443ed05051929b18865932e839d38ca476ac4d
     crossover = new SPXMSACrossover(0.8);
     mutation = new ShiftClosedGapsMSAMutation(0.2);
     selection = new BinaryTournamentSelection(new RankingAndCrowdingDistanceComparator());
